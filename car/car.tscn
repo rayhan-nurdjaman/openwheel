@@ -1,0 +1,97 @@
+[gd_scene load_steps=12 format=3 uid="uid://dvqu81j65chtr"]
+
+[ext_resource type="Script" path="res://car/car.gd" id="1_caus5"]
+[ext_resource type="PackedScene" uid="uid://plqi77fulwic" path="res://classic_muscle_car/scene.gltf" id="2_4ci7e"]
+[ext_resource type="Script" path="res://engine_sound.gd" id="2_460mh"]
+[ext_resource type="PackedScene" uid="uid://4arryn46ujiy" path="res://car/components/engine.tscn" id="2_y3xmu"]
+[ext_resource type="PackedScene" uid="uid://dk16tskqr0vgm" path="res://car/components/differential.tscn" id="3_nloo5"]
+[ext_resource type="PackedScene" uid="uid://dc2gw6s50pxur" path="res://car/components/transmission.tscn" id="3_rkp0x"]
+[ext_resource type="PackedScene" uid="uid://c5pjveyc6065i" path="res://car/components/running_gear.tscn" id="4_6b27f"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6kj2t"]
+bounce = 0.5
+
+[sub_resource type="Curve" id="Curve_gkkdu"]
+_data = [Vector2(0, 0.540521), 0.0, 0.170761, 0, 0, Vector2(0.693333, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.914138), -0.649141, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_2vce4"]
+buffer_length = 0.05
+
+[sub_resource type="Curve" id="Curve_grmg8"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.2, 1), 0.0, 0.0, 0, 0, Vector2(0.6, 0.2), -0.99947, -0.99947, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+metadata/_snap_enabled = true
+
+[node name="Car" type="RigidBody3D" node_paths=PackedStringArray("running_gear", "engine", "transmission", "differential")]
+collision_layer = 2
+collision_mask = 3
+mass = 800.0
+physics_material_override = SubResource("PhysicsMaterial_6kj2t")
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, 0.5, 0)
+inertia = Vector3(600, 600, 600)
+can_sleep = false
+contact_monitor = true
+linear_damp_mode = 1
+angular_damp_mode = 1
+script = ExtResource("1_caus5")
+running_gear = NodePath("RunningGear")
+engine = NodePath("Engine")
+transmission = NodePath("Transmission")
+differential = NodePath("Differential")
+
+[node name="Sketchfab_Scene" parent="." instance=ExtResource("2_4ci7e")]
+transform = Transform3D(-0.4, 0, 6.03983e-08, 0, 0.4, 0, -6.03983e-08, 0, -0.4, 0, 0.383137, 0.129483)
+
+[node name="Engine" parent="." instance=ExtResource("2_y3xmu")]
+torque_curve = SubResource("Curve_gkkdu")
+peak_torque = 500.0
+
+[node name="Transmission" parent="." instance=ExtResource("3_rkp0x")]
+
+[node name="Differential" parent="." instance=ExtResource("3_nloo5")]
+
+[node name="RunningGear" parent="." instance=ExtResource("4_6b27f")]
+longitudinal_friction_coefficient = 2.0
+lateral_friction_coefficient = 2.0
+front_spring_stiffness = 40000.0
+rear_spring_stiffness = 40000.0
+front_shock_damping = 4000.0
+rear_shock_damping = 4000.0
+front_ride_height = 0.3
+rear_ride_height = 0.3
+
+[node name="BodyCollision" type="CollisionPolygon3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+depth = 2.0
+polygon = PackedVector2Array(1.5, 0, 2.5, 0.2, 2.5, 1, -2.5, 0.5, -2.5, 0.2, -1.5, 0)
+
+[node name="CockpitCollision" type="CollisionPolygon3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+depth = 3.0
+polygon = PackedVector2Array(0.5, 0.2, -0.5, 0.2, -0.2, 1, 0.2, 1)
+
+[node name="BumperCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.95, 0.3)
+
+[node name="FollowCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 6)
+current = true
+
+[node name="FollowCameraPivot" type="Node3D" parent="."]
+
+[node name="FollowCamera" type="Marker3D" parent="FollowCameraPivot"]
+
+[node name="FollowCameraReset" type="Timer" parent="."]
+one_shot = true
+
+[node name="EngineSound" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -1.5)
+stream = SubResource("AudioStreamGenerator_2vce4")
+autoplay = true
+bus = &"Engines"
+script = ExtResource("2_460mh")
+wave_shape = SubResource("Curve_grmg8")
+
+[connection signal="timeout" from="FollowCameraReset" to="." method="_on_follow_camera_reset_timeout"]

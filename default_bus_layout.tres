@@ -1,0 +1,72 @@
+[gd_resource type="AudioBusLayout" load_steps=8 format=3 uid="uid://ugfirmabn137"]
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_docsg"]
+resource_name = "Reverb"
+room_size = 1.0
+damping = 1.0
+hipass = 0.5
+wet = 0.2
+
+[sub_resource type="AudioEffectLowPassFilter" id="AudioEffectLowPassFilter_k34xv"]
+resource_name = "LowPassFilter"
+
+[sub_resource type="AudioEffectDistortion" id="AudioEffectDistortion_mlpwc"]
+resource_name = "Distortion"
+mode = 2
+pre_gain = 20.0
+keep_hf_hz = 20000.0
+drive = 0.8
+post_gain = -20.0
+
+[sub_resource type="AudioEffectDistortion" id="AudioEffectDistortion_qns80"]
+resource_name = "Distortion"
+mode = 3
+pre_gain = 10.0
+keep_hf_hz = 10000.0
+drive = 1.0
+post_gain = -10.0
+
+[sub_resource type="AudioEffectEQ" id="AudioEffectEQ_hjsjh"]
+resource_name = "EQ"
+band_db/32_hz = 8.0
+band_db/100_hz = 4.0
+band_db/1000_hz = -4.0
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_e1myi"]
+resource_name = "Reverb"
+predelay_msec = 200.0
+room_size = 0.05
+damping = 0.0
+hipass = 0.2
+
+[sub_resource type="AudioEffectCompressor" id="AudioEffectCompressor_8a810"]
+resource_name = "Compressor"
+ratio = 2.0
+
+[resource]
+bus/1/name = &"Env"
+bus/1/solo = false
+bus/1/mute = false
+bus/1/bypass_fx = false
+bus/1/volume_db = 0.0
+bus/1/send = &"Master"
+bus/1/effect/0/effect = SubResource("AudioEffectReverb_docsg")
+bus/1/effect/0/enabled = true
+bus/2/name = &"Engines"
+bus/2/solo = false
+bus/2/mute = false
+bus/2/bypass_fx = false
+bus/2/volume_db = 0.0
+bus/2/send = &"Env"
+bus/2/effect/0/effect = SubResource("AudioEffectLowPassFilter_k34xv")
+bus/2/effect/0/enabled = true
+bus/2/effect/1/effect = SubResource("AudioEffectDistortion_mlpwc")
+bus/2/effect/1/enabled = true
+bus/2/effect/2/effect = SubResource("AudioEffectDistortion_qns80")
+bus/2/effect/2/enabled = true
+bus/2/effect/3/effect = SubResource("AudioEffectEQ_hjsjh")
+bus/2/effect/3/enabled = false
+bus/2/effect/4/effect = SubResource("AudioEffectReverb_e1myi")
+bus/2/effect/4/enabled = true
+bus/2/effect/5/effect = SubResource("AudioEffectCompressor_8a810")
+bus/2/effect/5/enabled = false
