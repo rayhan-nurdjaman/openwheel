@@ -5,8 +5,6 @@ extends RigidBody3D
 @export var controller: Controller
 @export var running_gear: RunningGear
 @export var engine: CarEngine
-@export var transmission: Transmission
-@export var differential: Differential
 
 @export var gear_ratios: Array[float] = [
 	-2.00,  # Reverse gear

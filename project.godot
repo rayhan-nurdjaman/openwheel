@@ -11,13 +11,15 @@ config_version=5
 [application]
 
 config/name="Open Wheel"
-run/main_scene="res://test.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+run/main_scene="uid://b2acnjux032a0"
+config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Debug="*res://debug.gd"
+Debug="*res://src/autoloads/debug.gd"
+SceneLoader="*res://src/autoloads/scene_loader.gd"
+GameState="*res://src/autoloads/game_state.gd"
 
 [input]
 
@@ -75,7 +77,8 @@ clutch={
 [layer_names]
 
 3d_physics/layer_1="world"
-3d_physics/layer_2="cars"
+3d_physics/layer_2="vehicles"
+3d_physics/layer_3="objects"
 
 [physics]
 

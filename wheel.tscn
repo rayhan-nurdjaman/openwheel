@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4xphfsd88d4n"]
+
+[ext_resource type="Script" uid="uid://b81qw520jdna1" path="res://wheel.gd" id="1_8m8ww"]
+
+[node name="Wheel" type="Marker3D"]
+script = ExtResource("1_8m8ww")
